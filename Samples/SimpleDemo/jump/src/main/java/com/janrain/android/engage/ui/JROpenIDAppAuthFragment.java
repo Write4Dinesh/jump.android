@@ -44,7 +44,13 @@ import com.janrain.android.engage.session.JRProvider;
 import com.janrain.android.engage.types.JRDictionary;
 import com.janrain.android.utils.LogUtils;
 
+import net.openid.appauth.AppAuthConfiguration;
 import net.openid.appauth.AuthorizationService;
+import net.openid.appauth.browser.BrowserBlacklist;
+import net.openid.appauth.browser.BrowserMatcher;
+import net.openid.appauth.browser.Browsers;
+import net.openid.appauth.browser.VersionRange;
+import net.openid.appauth.browser.VersionedBrowserMatcher;
 
 public class JROpenIDAppAuthFragment extends JRUiFragment {
     private JRProvider mProvider;
@@ -93,7 +99,9 @@ public class JROpenIDAppAuthFragment extends JRUiFragment {
         LogUtils.logd(TAG, "[signIn]");
         mProvider = mSession.getCurrentlyAuthenticatingProvider();
         mParentContext = mSession.getCurrentOpenIdStartActivityContext();
-        mSession.setCurrentlyAuthenticatingOpenIDAppAuthService(new AuthorizationService(mParentContext));
+        mSession.setCurrentlyAuthenticatingOpenIDAppAuthService(new AuthorizationService(mParentContext, new AppAuthConfiguration.Builder()
+                .setBrowserMatcher(blockListBrowser())
+                .build()));
         JROpenIDAppAuth.OpenIDAppAuthProvider openIDProvider = JROpenIDAppAuth.createOpenIDAppAuthProvider(mProvider, getActivity(),
                 new JROpenIDAppAuth.OpenIDAppAuthCallback() {
                     @Override
@@ -127,7 +135,14 @@ public class JROpenIDAppAuthFragment extends JRUiFragment {
         LogUtils.logd(TAG, "[startAuthentication]");
         openIDProvider.startAuthentication();
     }
-
+    private BrowserBlacklist blockListBrowser() {
+        VersionRange versionRange = VersionRange.atMost("4.0.20-56");//this or below
+        //VersionRange versionRange = VersionRange.ANY_VERSION;//block all the versions
+        BrowserBlacklist blacklist = new BrowserBlacklist(
+                new VersionedBrowserMatcher(Browsers.SBrowser.PACKAGE_NAME, Browsers.SBrowser.SIGNATURE_SET,true, // custom tab
+                        versionRange));
+        return blacklist;
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         LogUtils.logd(TAG, "requestCode: " + requestCode + " resultCode: " + resultCode);

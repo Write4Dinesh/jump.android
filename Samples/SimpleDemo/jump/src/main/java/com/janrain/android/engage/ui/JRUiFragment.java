@@ -102,7 +102,7 @@ public abstract class JRUiFragment extends Fragment {
 
     /*package*/ JRSession mSession;
     /*package*/ final String TAG = getLogTag();
-    /*package*/ String getLogTag() { return getClass().getSimpleName(); }
+    /*package*/ String getLogTag() { return "Dinesh:" + getClass().getSimpleName(); }
 
     /**
      * @internal
