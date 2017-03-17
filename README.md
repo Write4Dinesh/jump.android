@@ -7,7 +7,18 @@ Getting Started:
 Report bugs or ask questions:
     https://support.janrain.com
 
-### Upgrading to v7.0.2
+### Upgrading to v7.0.4
+- Add the following activity to your AndroidManifest.xml file (maybe below the OpenIDAppAuthTokenActivity):
+```xml
+<activity
+    android:name="com.janrain.android.engage.OpenIDAppAuthCancelledActivity"
+    android:label="REPLACE_WITH_YOUR_APPNAME_AS_NEEDED"
+    android:theme="@style/Theme.Janrain.Dialog.Light"
+    android:windowSoftInputMode="stateHidden">
+</activity>
+```
+
+### Upgrading to v7.0.3
 
 - Update the module settings for your project to use the latest Jump sdk files you may need to remove any existing "jump" modules and re-add the latest module in order to ensure your project files are updated.
 - Open the '/jump.android/Jump/src/res/values/openid_appauth_idp_configs.xml' file and update the `google_client_id` and `google_auth_redirect_uri` with the appropriate Google application client id that correlates to the Google app that is used in your Engage application.
